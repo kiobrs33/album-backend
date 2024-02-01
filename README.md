@@ -1,2 +1,2 @@
-# REST API - EXPRESS
+# REST API - EXPRESS - ALBUM
 # By Rene Lozano
