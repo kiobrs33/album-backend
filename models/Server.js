@@ -1,15 +1,22 @@
 const express = require("express");
 const cors = require("cors");
+const { dbConnection } = require("../database/config");
 require("dotenv").config();
 
 class Server {
   constructor() {
     this.app = express();
-    this.port = process.env.PORT || process.env.LOCAL_PORT;
+    this.port = process.env.PORT || process.env.LOCAL_PORT; // Importando el puerto desde las VARIABLES de ENTORNO
 
-    // The order of imports is IMPORTANT!
+    // El orden de importacion es IMPORTANTE!
+    this.connectionDB();
     this.middleware();
     this.routes();
+  }
+
+  // Conexion a la base de datos
+  async connectionDB() {
+    await dbConnection();
   }
 
   middleware() {
@@ -18,10 +25,13 @@ class Server {
     this.app.use(express.static("public"));
   }
 
+  // Rutas de la aplicacion
   routes() {
     this.app.use("/api", require("../routes/albumRoute"));
+    this.app.use("/categorie", require("../routes/categorieRoute"));
   }
 
+  // Funcion para iniciar el SERVIDOR!
   listen() {
     this.app.listen(this.port, () => {
       console.log("Server to in: ", this.port);
