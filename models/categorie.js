@@ -5,6 +5,10 @@ const CategorieSchema = Schema({
     type: String,
     required: [true, "The name category is required."],
   },
+  deleted: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 module.exports = model("Categorie", CategorieSchema);

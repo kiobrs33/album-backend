@@ -5,6 +5,10 @@ const RolSchema = Schema({
     type: String,
     required: true,
   },
+  deleted: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 module.exports = model("rol", RolSchema);

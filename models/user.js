@@ -36,10 +36,10 @@ const UserSchema = Schema({
   },
 });
 
-// Customizando un metodo de la INSTANCIA para alterar los datos de retorna despues de GUARDAR
-UserSchema.methods.toJSON = function () {
-  const { password, ...rest } = this.toObject();
-  return rest;
-};
+// Customizando un metodo de la INSTANCIA para alterar los datos que retorna despues de GUARDAR
+// UserSchema.methods.toJSON = function () {
+//   const { password, ...rest } = this.toObject();
+//   return rest;
+// };
 
 module.exports = model("User", UserSchema);

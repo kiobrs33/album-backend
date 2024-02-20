@@ -3,20 +3,20 @@ const { check } = require("express-validator");
 
 const router = Router();
 const {
-  albumGet,
-  albumPost,
-  albumPut,
-  albumDelete,
-} = require("../controllers/albumController");
-const { validateAllFields } = require("../middlewares/validateAllFields");
+  getUsers,
+  postUser,
+  putUser,
+  deleteUser,
+} = require("../controllers/userController");
 const {
   validateRol,
   validateExistEmail,
   validateExistIdUser,
 } = require("../helpers/dbValidators");
+const { validateAllFields } = require("../middlewares/validateAllFields");
 
 // RUTAS
-router.get("/", albumGet);
+router.get("/", getUsers);
 router.post(
   "/",
   [
@@ -27,7 +27,7 @@ router.post(
     check("email").custom(validateExistEmail),
     validateAllFields,
   ],
-  albumPost
+  postUser
 );
 router.put(
   "/:id",
@@ -37,8 +37,16 @@ router.put(
     check("rol").custom(validateRol),
     validateAllFields,
   ],
-  albumPut
+  putUser
 );
-router.delete("/", albumDelete);
+router.delete(
+  "/:id",
+  [
+    check("id", "No es un ID valido").isMongoId(),
+    check("id").custom(validateExistIdUser),
+    validateAllFields,
+  ],
+  deleteUser
+);
 
 module.exports = router;

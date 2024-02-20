@@ -18,6 +18,7 @@ const validateExistEmail = async (email = "") => {
 
 const validateExistIdUser = async (id = "") => {
   const isThereId = await User.findById(id);
+
   if (!isThereId) {
     throw new Error(`El Id del usuario no existe`);
   }

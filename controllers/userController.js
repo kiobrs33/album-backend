@@ -1,6 +1,5 @@
 const { response, request } = require("express");
 const bcryptjs = require("bcryptjs");
-const { validationResult } = require("express-validator");
 
 // Importando MODELOS
 const User = require("../models/user");
@@ -9,15 +8,23 @@ const User = require("../models/user");
 // BODY { name: "Rene", lastname: "Lozano" }
 // QUERY http://localhost:8000/api/?index=10&page=24&code=lagarto
 
-const albumGet = (req = request, res = response) => {
-  const query = req.query;
+const getUsers = async (req = request, res = response) => {
+  // TODO validar que los QUERYS solo sean numeros y no letras
+  const { limit = 10, skip = 0 } = req.query;
+  const query = { state: true }; // Solo los registros que no fueron borrados
+
+  const [users, total] = await Promise.all([
+    User.find(query).skip(parseInt(skip)).limit(parseInt(limit)),
+    User.countDocuments(query),
+  ]);
+
   res.status(200).json({
-    msg: "get API GET",
-    ...query,
+    total,
+    users,
   });
 };
 
-const albumPost = async (req = request, res = response) => {
+const postUser = async (req = request, res = response) => {
   const { password, email, ...rest } = req.body;
   const user = new User({ password, email, ...rest });
 
@@ -30,12 +37,11 @@ const albumPost = async (req = request, res = response) => {
 
   // Respuesta de la operacion
   res.status(200).json({
-    msg: "User Created!",
     user,
   });
 };
 
-const albumPut = async (req = request, res = response) => {
+const putUser = async (req = request, res = response) => {
   const { id } = req.params;
   const { password, email, ...rest } = req.body;
 
@@ -45,7 +51,7 @@ const albumPut = async (req = request, res = response) => {
     rest.password = bcryptjs.hashSync(password, salt);
   }
 
-  // Se almacena la informacion ANTIGUA, ver otro metodo que devuelva la informacion ACTUALIZADA
+  // Retorna la informacion anterior a la actualizacion
   const user = await User.findByIdAndUpdate(id, rest);
 
   res.status(200).json({
@@ -54,15 +60,23 @@ const albumPut = async (req = request, res = response) => {
   });
 };
 
-const albumDelete = (req = request, res = response) => {
+const deleteUser = async (req = request, res = response) => {
+  const { id } = req.params;
+
+  // Aqui si se elimina de la BD
+  // const user = await User.findByIdAndDelete(id)
+
+  // Cambiamos el STATE del usuario para mantenerlo aun en la BD
+  const user = await User.findByIdAndUpdate(id, { state: false });
+
   res.status(200).json({
-    msg: "get API DELETE",
+    user,
   });
 };
 
 module.exports = {
-  albumGet,
-  albumPost,
-  albumPut,
-  albumDelete,
+  getUsers,
+  postUser,
+  putUser,
+  deleteUser,
 };

@@ -27,8 +27,9 @@ class Server {
 
   // Rutas de la aplicacion
   routes() {
-    this.app.use("/api", require("../routes/albumRoute"));
+    this.app.use("/user", require("../routes/userRoute"));
     this.app.use("/categorie", require("../routes/categorieRoute"));
+    this.app.use("/rol", require("../routes/rolRoute"));
   }
 
   // Funcion para iniciar el SERVIDOR!
