@@ -30,6 +30,7 @@ class Server {
     this.app.use("/user", require("../routes/userRoute"));
     this.app.use("/categorie", require("../routes/categorieRoute"));
     this.app.use("/rol", require("../routes/rolRoute"));
+    this.app.use("/auth", require("../routes/authRoute"));
   }
 
   // Funcion para iniciar el SERVIDOR!
